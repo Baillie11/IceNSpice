@@ -30,6 +30,7 @@ init_db()
 
 players = []
 current_player_index = 0  # Track which player's turn it is
+current_question_number = 1  # Track question number
 
 @app.route("/")
 def home():
@@ -37,7 +38,8 @@ def home():
 
 @app.route("/game", methods=["GET", "POST"])
 def index():
-    global players
+    global players, current_player_index, current_question_number
+
     if request.method == "POST":
         name = request.form.get("name").strip()
         orientation = request.form.get("orientation")
@@ -45,6 +47,10 @@ def index():
         if name and orientation:
             # Store player as a dictionary
             players.append({"name": name, "orientation": orientation})
+
+    # Reset turn order and question number when starting a new game
+    current_player_index = 0
+    current_question_number = 1
 
     return render_template("index.html", players=players)
 
@@ -58,14 +64,15 @@ def randomize():
 
 @app.route("/reset")
 def reset():
-    global players, current_player_index
+    global players, current_player_index, current_question_number
     players = []  # Clear player list
     current_player_index = 0  # Reset turn order
+    current_question_number = 1  # Reset question number
     return redirect(url_for("index"))
 
 @app.route("/gameplay")
 def gameplay():
-    global players, current_player_index
+    global players, current_player_index, current_question_number
 
     if not players:
         return redirect(url_for("index"))
@@ -85,15 +92,20 @@ def gameplay():
     # Replace USERNAME with the current player's name
     challenge_text = challenge_text.replace("USERNAME", current_player)
 
-    return render_template("gameplay.html", players=players, challenge=challenge_text, current_player=current_player)
+    return render_template("gameplay.html", players=players, challenge=challenge_text, 
+                           current_player=current_player, current_player_index=current_player_index,
+                           question_number=current_question_number)
 
 @app.route("/next_turn")
 def next_turn():
-    global players, current_player_index
+    global players, current_player_index, current_question_number
 
     if players:
-        # Move to the next player (loop back if at the end)
+        # Move to the next player in order (loop back if at the end)
         current_player_index = (current_player_index + 1) % len(players)
+
+        # Increment the question number
+        current_question_number += 1
 
     return redirect(url_for("gameplay"))
 
@@ -138,6 +150,7 @@ def delete_challenge(id):
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
+    """Admin login page."""
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
