@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice n Spice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="flex flex-col items-center min-h-screen py-10 px-5">
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='icenspicelogo.png') }}" alt="Ice n Spice Logo" class="w-48 md:w-64 mb-6">
+
+        <h1 class="text-4xl font-bold text-center text-red-500">Welcome to Ice n Spice</h1>
+
+        <p class="text-lg text-center text-gray-600 mt-4 max-w-xl">
+            Ice n Spice is a fun couples ice breaker game where individuals and couples complete exciting challenges with others. Get ready to connect, laugh, and spice things up!
+        </p>
+
+        <h2 class="text-2xl font-semibold mt-8">How to Play:</h2>
+        <ul class="mt-4 text-left text-lg bg-white shadow-lg rounded-lg p-5 w-full max-w-md">
+            <li class="mb-2">✔️ Each player (individuals or couples) enters their name.</li>
+            <li class="mb-2">✔️ The game randomly assigns player order.</li>
+            <li class="mb-2">✔️ Complete fun challenges with the person or couple you are paired with!</li>
+        </ul>
+
+        <!-- Spacing before the button -->
+        <div class="mt-10"></div>
+
+        <!-- Start Game Button - Now properly below everything -->
+        <a href="{{ url_for('index') }}" class="mt-6">
+            <button class="px-6 py-3 bg-red-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-red-600 transition-all">
+                Start a New Game
+            </button>
+        </a>
+    </div>
+
+</body>
+</html>
