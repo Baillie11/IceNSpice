@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Order</title>
+</head>
+<body>
+    <h1>Randomized Player Order</h1>
+
+    <ol>
+        {% for player in players %}
+            <li>{{ player }}</li>
+        {% endfor %}
+    </ol>
+
+    <a href="{{ url_for('index') }}"><button>Back</button></a>
+</body>
+</html>
