@@ -25,15 +25,18 @@
             <li class="mb-2">✔️ Complete fun challenges with the person or couple you are paired with!</li>
         </ul>
 
-        <!-- Spacing before the button -->
-        <div class="mt-10"></div>
-
-        <!-- Start Game Button - Now properly below everything -->
+        <!-- Start Game Button -->
         <a href="{{ url_for('index') }}" class="mt-6">
             <button class="px-6 py-3 bg-red-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-red-600 transition-all">
                 Start a New Game
             </button>
         </a>
+
+        <!-- Admin Login Link -->
+        <a href="{{ url_for('admin_login') }}" class="mt-6 text-red-500 hover:underline text-lg">
+            Admin Login
+        </a>
+
     </div>
 
 </body>
