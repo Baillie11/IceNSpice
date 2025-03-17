@@ -45,12 +45,12 @@
             </ul>
         </div>
 
-        <!-- Buttons for Next Steps -->
+        <!-- Start Game Button -->
         <div class="mt-6 space-y-4 w-full max-w-md">
             {% if players %}
-                <a href="{{ url_for('randomize') }}" 
+                <a href="{{ url_for('gameplay') }}" 
                    class="block text-center px-6 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition-all">
-                    Randomize Player Order
+                    Start Game
                 </a>
                 <a href="{{ url_for('reset') }}" 
                    class="block text-center px-6 py-3 bg-gray-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-gray-600 transition-all">

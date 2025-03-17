@@ -37,5 +37,13 @@ def reset():
     players = []  # Clear player list
     return redirect(url_for("index"))
 
+@app.route("/gameplay")
+def gameplay():
+    global players
+    shuffled_players = players[:]  # Copy list to shuffle
+    random.shuffle(shuffled_players)
+    return render_template("gameplay.html", players=shuffled_players)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

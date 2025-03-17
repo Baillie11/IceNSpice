@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice n Spice - Gameplay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="flex flex-col items-center min-h-screen py-10 px-5">
+        <!-- Header Section -->
+        <div class="flex justify-between w-full max-w-2xl">
+            <h1 class="text-3xl font-bold text-red-500">Ice n Spice Challenges</h1>
+            <!-- Player Order in the Top Right -->
+            <div class="text-right">
+                <h2 class="text-lg font-semibold text-gray-700">Player Order:</h2>
+                <ol class="text-md text-gray-600">
+                    {% for player in players %}
+                        <li>{{ loop.index }}. {{ player.name }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+
+        <!-- Round & Question Section -->
+        <div class="mt-8 text-center">
+            <h2 class="text-xl font-bold text-gray-700">Round <span id="round-number">1</span></h2>
+            <h3 class="text-lg text-gray-600">Question <span id="question-number">1</span></h3>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="mt-6 space-y-4 w-full max-w-md">
+            <button onclick="nextQuestion()" 
+                    class="w-full px-6 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition-all">
+                Next Question
+            </button>
+            <a href="{{ url_for('index') }}" 
+               class="block text-center px-6 py-3 bg-gray-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-gray-600 transition-all">
+                End Game
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let round = 1;
+        let question = 1;
+
+        function nextQuestion() {
+            question++;
+            document.getElementById("question-number").textContent = question;
+
+            if (question > 5) { // Example: 5 questions per round
+                question = 1;
+                round++;
+                document.getElementById("round-number").textContent = round;
+            }
+        }
+    </script>
+
+</body>
+</html>
