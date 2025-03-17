@@ -3,27 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IceNSpice</title>
+    <title>Ice n Spice - Game Setup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Ice N Spice</h1>
-    <h2></h2>
-    
-    <form action="/" method="POST">
-        <input type="text" name="name" placeholder="Enter player name" required>
-        <button type="submit">Add Player</button>
-    </form>
-    
-    <h2>Players:</h2>
-    <ul>
-        {% for player in players %}
-            <li>{{ player }}</li>
-        {% endfor %}
-    </ul>
+<body class="bg-gray-100 text-gray-800">
 
-    {% if players %}
-        <a href="{{ url_for('randomize') }}"><button>Randomize Order</button></a>
-        <a href="{{ url_for('reset') }}"><button>Reset Players</button></a>
-    {% endif %}
+    <div class="flex flex-col items-center min-h-screen py-10 px-5">
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='icenspicelogo.png') }}" alt="Ice n Spice Logo" class="w-48 md:w-64 mb-6">
+
+        <h1 class="text-3xl font-bold text-center text-red-500">Enter Player Names</h1>
+
+        <!-- Player Entry Form -->
+        <form action="{{ url_for('index') }}" method="POST" class="mt-6 w-full max-w-sm">
+            <input type="text" name="name" placeholder="Enter player name" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+            <button type="submit" 
+                    class="w-full mt-3 px-6 py-2 bg-red-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-red-600 transition-all">
+                Add Player
+            </button>
+        </form>
+
+        <!-- Display Players List -->
+        <div class="mt-6 w-full max-w-md">
+            <h2 class="text-xl font-semibold text-gray-700 text-center">Current Players:</h2>
+            <ul class="bg-white shadow-md rounded-lg p-5">
+                {% for player in players %}
+                    <li class="py-2 border-b last:border-none text-lg text-center">{{ player }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Buttons for Next Steps -->
+        <div class="mt-6 space-y-4 w-full max-w-md">
+            {% if players %}
+                <a href="{{ url_for('randomize') }}" 
+                   class="block text-center px-6 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition-all">
+                    Randomize Player Order
+                </a>
+                <a href="{{ url_for('reset') }}" 
+                   class="block text-center px-6 py-3 bg-gray-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-gray-600 transition-all">
+                    Reset Players
+                </a>
+            {% endif %}
+            <a href="{{ url_for('home') }}" 
+               class="block text-center px-6 py-3 bg-gray-300 text-gray-700 font-semibold text-lg rounded-lg shadow-md hover:bg-gray-400 transition-all">
+                Back to Home
+            </a>
+        </div>
+
+    </div>
+
 </body>
 </html>
