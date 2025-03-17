@@ -14,15 +14,19 @@ def index():
     global players
     if request.method == "POST":
         name = request.form.get("name").strip()
-        if name and name not in players:
-            players.append(name)
+        orientation = request.form.get("orientation")
+
+        if name and orientation:
+            # Store player as a dictionary
+            players.append({"name": name, "orientation": orientation})
+
     return render_template("index.html", players=players)
 
 @app.route("/randomize")
 def randomize():
     global players
     if players:
-        shuffled_players = players[:]
+        shuffled_players = players[:]  # Copy list to shuffle
         random.shuffle(shuffled_players)
         return render_template("result.html", players=shuffled_players)
     return redirect(url_for("index"))
@@ -30,7 +34,7 @@ def randomize():
 @app.route("/reset")
 def reset():
     global players
-    players = []
+    players = []  # Clear player list
     return redirect(url_for("index"))
 
 if __name__ == "__main__":

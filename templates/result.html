@@ -17,7 +17,9 @@
         <!-- Ordered List of Players -->
         <ol class="mt-6 w-full max-w-md bg-white shadow-md rounded-lg p-5 text-lg text-center">
             {% for player in players %}
-                <li class="py-2 border-b last:border-none">{{ loop.index }}. {{ player }}</li>
+                <li class="py-2 border-b last:border-none">
+                    {{ loop.index }}. {{ player.name }} ({{ player.orientation }})
+                </li>
             {% endfor %}
         </ol>
 

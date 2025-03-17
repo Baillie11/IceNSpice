@@ -12,12 +12,21 @@
         <!-- Logo -->
         <img src="{{ url_for('static', filename='icenspicelogo.png') }}" alt="Ice n Spice Logo" class="w-48 md:w-64 mb-6">
 
-        <h1 class="text-3xl font-bold text-center text-red-500">Enter Player Names</h1>
+        <h1 class="text-3xl font-bold text-center text-red-500">Enter Player Details</h1>
 
         <!-- Player Entry Form -->
         <form action="{{ url_for('index') }}" method="POST" class="mt-6 w-full max-w-sm">
             <input type="text" name="name" placeholder="Enter player name" required
                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+            
+            <!-- Sexual Orientation Dropdown -->
+            <select name="orientation" required
+                    class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                <option value="" disabled selected>Select Orientation</option>
+                <option value="Straight">Straight</option>
+                <option value="Bi">Bi</option>
+            </select>
+
             <button type="submit" 
                     class="w-full mt-3 px-6 py-2 bg-red-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-red-600 transition-all">
                 Add Player
@@ -29,7 +38,9 @@
             <h2 class="text-xl font-semibold text-gray-700 text-center">Current Players:</h2>
             <ul class="bg-white shadow-md rounded-lg p-5">
                 {% for player in players %}
-                    <li class="py-2 border-b last:border-none text-lg text-center">{{ player }}</li>
+                    <li class="py-2 border-b last:border-none text-lg text-center">
+                        {{ player.name }} ({{ player.orientation }})
+                    </li>
                 {% endfor %}
             </ul>
         </div>
