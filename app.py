@@ -1,16 +1,35 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 import os
 import random
+import smtplib
+from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (Locally)
+if os.path.exists(".env"):
+    load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # Change this to a strong secret key
+app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_key")
+
+# Load credentials from environment variables
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+SMTP_SERVER = os.getenv("SMTP_SERVER")
+SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
+SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+print(SMTP_USERNAME)
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+print(SMTP_PASSWORD)
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
+
+# Ensure required variables are set
+if not all([ADMIN_EMAIL, SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD]):
+    raise ValueError("Missing required environment variables. Check your .env file or system environment variables.")
 
 DB_FILE = "challenges.db"
-
-# Admin credentials (change as needed)
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "password123"
 
 def init_db():
     """Creates the challenges table if it doesn't exist."""
@@ -29,8 +48,8 @@ def init_db():
 init_db()
 
 players = []
-current_player_index = 0  # Track which player's turn it is
-current_question_number = 1  # Track question number
+current_player_index = 0
+current_question_number = 1
 
 @app.route("/")
 def home():
@@ -45,10 +64,8 @@ def index():
         orientation = request.form.get("orientation")
 
         if name and orientation:
-            # Store player as a dictionary
             players.append({"name": name, "orientation": orientation})
 
-    # Reset turn order and question number when starting a new game
     current_player_index = 0
     current_question_number = 1
 
@@ -65,9 +82,9 @@ def randomize():
 @app.route("/reset")
 def reset():
     global players, current_player_index, current_question_number
-    players = []  # Clear player list
-    current_player_index = 0  # Reset turn order
-    current_question_number = 1  # Reset question number
+    players = []
+    current_player_index = 0
+    current_question_number = 1
     return redirect(url_for("index"))
 
 @app.route("/gameplay")
@@ -77,10 +94,8 @@ def gameplay():
     if not players:
         return redirect(url_for("index"))
 
-    # Get the current player's name
     current_player = players[current_player_index]["name"]
 
-    # Fetch a random challenge
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute("SELECT challenge_text FROM challenges ORDER BY RANDOM() LIMIT 1")
@@ -88,8 +103,6 @@ def gameplay():
     conn.close()
 
     challenge_text = challenge[0] if challenge else "No challenges available."
-
-    # Replace USERNAME with the current player's name
     challenge_text = challenge_text.replace("USERNAME", current_player)
 
     return render_template("gameplay.html", players=players, challenge=challenge_text, 
@@ -101,13 +114,44 @@ def next_turn():
     global players, current_player_index, current_question_number
 
     if players:
-        # Move to the next player in order (loop back if at the end)
         current_player_index = (current_player_index + 1) % len(players)
-
-        # Increment the question number
         current_question_number += 1
 
     return redirect(url_for("gameplay"))
+
+# ------------------- Challenge Suggestion Page -------------------
+
+@app.route("/suggest-challenge", methods=["GET", "POST"])
+def suggest_challenge():
+    """Handles challenge suggestions from users."""
+    if request.method == "POST":
+        challenge_idea = request.form.get("challenge_idea")
+
+        if challenge_idea:
+            subject = "New Challenge Suggestion for Ice n Spice"
+            message = f"New challenge idea submitted:\n\n{challenge_idea}"
+            send_email(ADMIN_EMAIL, subject, message)
+
+            flash("Your challenge suggestion has been submitted!", "success")
+            return redirect(url_for("suggest_challenge"))
+
+    return render_template("suggest_challenge.html")
+
+def send_email(to_email, subject, message):
+    """Function to send emails via SMTP"""
+    try:
+        msg = MIMEText(message)
+        msg["Subject"] = subject
+        msg["From"] = SMTP_USERNAME
+        msg["To"] = to_email
+
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        server.sendmail(SMTP_USERNAME, to_email, msg.as_string())
+        server.quit()
+    except Exception as e:
+        print("Error sending email:", e)
 
 # ------------------- Admin Panel -------------------
 
