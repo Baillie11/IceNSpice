@@ -6,28 +6,37 @@ import smtplib
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
-# Load environment variables from .env file (Locally)
+# Manually force environment variables to load in PythonAnywhere
+if "ADMIN_EMAIL" not in os.environ:
+    print("⚠️ Environment variables not found. Attempting to load from WSGI...")
+    os.environ["ADMIN_EMAIL"] = "andrew@clickecommerce.com.au"
+    os.environ["SMTP_SERVER"] = "smtp.gmail.com"
+    os.environ["SMTP_PORT"] = "587"
+    os.environ["SMTP_USERNAME"] = "your_email@gmail.com"
+    os.environ["SMTP_PASSWORD"] = "your_16_character_app_password"
+    os.environ["ADMIN_USERNAME"] = "admin"
+    os.environ["ADMIN_PASSWORD"] = "password123"
+
+# Load .env file only for local development
 if os.path.exists(".env"):
     load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_secret_key")
 
-# Load credentials from environment variables
+# Retrieve credentials from environment variables
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 SMTP_SERVER = os.getenv("SMTP_SERVER")
 SMTP_PORT = int(os.getenv("SMTP_PORT", 587))
 SMTP_USERNAME = os.getenv("SMTP_USERNAME")
-print(SMTP_USERNAME)
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-print(SMTP_PASSWORD)
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
-
-# Ensure required variables are set
-if not all([ADMIN_EMAIL, SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD]):
-    raise ValueError("Missing required environment variables. Check your .env file or system environment variables.")
+# Check if all required environment variables are set
+missing_vars = [var for var in ["ADMIN_EMAIL", "SMTP_SERVER", "SMTP_USERNAME", "SMTP_PASSWORD", "ADMIN_USERNAME", "ADMIN_PASSWORD"] if not os.getenv(var)]
+if missing_vars:
+    raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}. Check your .env file or system environment variables.")
 
 DB_FILE = "challenges.db"
 
@@ -76,8 +85,9 @@ def randomize():
     global players
     if players:
         random.shuffle(players)
-        return render_template("result.html", players=players)
+        return redirect(url_for("gameplay"))  # 🔁 go to gameplay page instead of result.html
     return redirect(url_for("index"))
+
 
 @app.route("/reset")
 def reset():
@@ -118,6 +128,14 @@ def next_turn():
         current_question_number += 1
 
     return redirect(url_for("gameplay"))
+
+@app.route("/quit")
+def quit_game():
+    global players, current_player_index, current_question_number
+    players = []
+    current_player_index = 0
+    current_question_number = 1
+    return redirect(url_for("index"))
 
 # ------------------- Challenge Suggestion Page -------------------
 
