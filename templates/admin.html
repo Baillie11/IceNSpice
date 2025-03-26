@@ -29,8 +29,8 @@
       </div>
 
       <div>
-        <label class="block font-medium text-gray-700">Category</label>
-        <select name="category" required
+        <label class="block font-medium text-gray-700">Orientation</label>
+        <select name="orientation" required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
           <option value="Straight">Straight</option>
           <option value="Bi">Bi</option>
@@ -41,6 +41,7 @@
         <label class="block font-medium text-gray-700">Pairing</label>
         <select name="pairing" required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+          <option value="All">All</option>
           <option value="Male to Female">Male to Female</option>
           <option value="Female to Male">Female to Male</option>
           <option value="Male to Male">Male to Male</option>
@@ -63,7 +64,7 @@
           <th class="p-2 text-left">ID</th>
           <th class="p-2 text-left">Text</th>
           <th class="p-2">Intensity</th>
-          <th class="p-2">Category</th>
+          <th class="p-2">Orientation</th>
           <th class="p-2">Pairing</th>
           <th class="p-2">Action</th>
         </tr>
@@ -85,7 +86,6 @@
       </tbody>
     </table>
 
-    <!-- Back to Home Button -->
     <div class="mt-8 text-center">
       <a href="{{ url_for('home') }}"
          class="inline-block px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition">

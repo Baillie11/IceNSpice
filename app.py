@@ -48,8 +48,10 @@ def init_db():
         CREATE TABLE IF NOT EXISTS challenges (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             intensity INTEGER NOT NULL CHECK(intensity BETWEEN 1 AND 10),
-            category TEXT NOT NULL CHECK(category IN ('Straight', 'Bi')),
-            pairing TEXT NOT NULL CHECK(pairing IN ('Male to Female', 'Female to Male', 'Male to Male', 'Female to Female')),
+            orientation TEXT NOT NULL CHECK(orientation IN ('Straight', 'Bi')),
+            pairing TEXT NOT NULL CHECK(pairing IN (
+                'Male to Female', 'Female to Male', 'Male to Male', 'Female to Female'
+            )),
             challenge_text TEXT NOT NULL
         )
     ''')
@@ -131,11 +133,11 @@ def admin():
     if request.method == "POST":
         challenge_text = request.form["challenge_text"].strip()
         intensity = int(request.form["intensity"])
-        category = request.form["category"]
+        orientation = request.form["orientation"]
         pairing = request.form["pairing"]
         if challenge_text:
-            c.execute("INSERT INTO challenges (intensity, category, pairing, challenge_text) VALUES (?, ?, ?, ?)",
-                      (intensity, category, pairing, challenge_text))
+            c.execute("INSERT INTO challenges (intensity, orientation, pairing, challenge_text) VALUES (?, ?, ?, ?)",
+                      (intensity, orientation, pairing, challenge_text))
             conn.commit()
 
     c.execute("SELECT * FROM challenges")
@@ -199,4 +201,3 @@ def send_email(to_email, subject, message):
 
 if __name__ == "__main__":
     app.run(debug=True)
-exit
