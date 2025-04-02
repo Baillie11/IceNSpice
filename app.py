@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 if os.path.exists(".env"):
     load_dotenv()
 
-# Manually set defaults if running on PythonAnywhere
+# Defaults for PythonAnywhere (in case)
 if "ADMIN_EMAIL" not in os.environ:
     os.environ["ADMIN_EMAIL"] = "andrew@clickecommerce.com.au"
     os.environ["SMTP_SERVER"] = "smtp.gmail.com"
@@ -34,7 +34,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 required_vars = [ADMIN_EMAIL, SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD]
 if not all(required_vars):
-    raise ValueError("Missing required environment variables. Check your .env or system environment.")
+    raise ValueError("Missing required environment variables. Check your .env or system environment variables.")
 
 DB_FILE = "challenges.db"
 players = []
@@ -72,8 +72,14 @@ def index():
         name = request.form.get("name").strip()
         orientation = request.form.get("orientation")
         sex = request.form.get("sex")
+        partner = request.form.get("partner") or None
         if name and orientation and sex:
-            players.append({"name": name, "orientation": orientation, "sex": sex})
+            players.append({
+                "name": name,
+                "orientation": orientation,
+                "sex": sex,
+                "partner": partner
+            })
     current_player_index = 0
     current_question_number = 1
     current_round = 1
@@ -121,7 +127,7 @@ def next_turn():
                 current_round += 1
                 current_question_number = 1
             else:
-                return redirect(url_for("home"))  # End game after 10 rounds
+                return redirect(url_for("home"))  # Game over after round 10
 
     return redirect(url_for("gameplay"))
 
