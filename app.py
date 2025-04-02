@@ -6,11 +6,11 @@ import smtplib
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
-# Load environment variables from .env (for local use)
+# Load environment variables
 if os.path.exists(".env"):
     load_dotenv()
 
-# Manually set environment variables for PythonAnywhere if missing
+# Manually set defaults if running on PythonAnywhere
 if "ADMIN_EMAIL" not in os.environ:
     os.environ["ADMIN_EMAIL"] = "andrew@clickecommerce.com.au"
     os.environ["SMTP_SERVER"] = "smtp.gmail.com"
@@ -40,6 +40,7 @@ DB_FILE = "challenges.db"
 players = []
 current_player_index = 0
 current_question_number = 1
+current_round = 1
 
 def init_db():
     conn = sqlite3.connect(DB_FILE)
@@ -50,7 +51,7 @@ def init_db():
             intensity INTEGER NOT NULL CHECK(intensity BETWEEN 1 AND 10),
             orientation TEXT NOT NULL CHECK(orientation IN ('Straight', 'Bi')),
             pairing TEXT NOT NULL CHECK(pairing IN (
-                'Male to Female', 'Female to Male', 'Male to Male', 'Female to Female'
+                'Male to Female', 'Female to Male', 'Male to Male', 'Female to Female', 'All'
             )),
             challenge_text TEXT NOT NULL
         )
@@ -66,7 +67,7 @@ def home():
 
 @app.route("/game", methods=["GET", "POST"])
 def index():
-    global players, current_player_index, current_question_number
+    global players, current_player_index, current_question_number, current_round
     if request.method == "POST":
         name = request.form.get("name").strip()
         orientation = request.form.get("orientation")
@@ -75,6 +76,7 @@ def index():
             players.append({"name": name, "orientation": orientation, "sex": sex})
     current_player_index = 0
     current_question_number = 1
+    current_round = 1
     return render_template("index.html", players=players)
 
 @app.route("/randomize")
@@ -87,7 +89,7 @@ def randomize():
 
 @app.route("/gameplay")
 def gameplay():
-    global players, current_player_index, current_question_number
+    global players, current_player_index, current_question_number, current_round
     if not players:
         return redirect(url_for("index"))
 
@@ -104,23 +106,33 @@ def gameplay():
 
     return render_template("gameplay.html", players=players, challenge=challenge_text,
                            current_player=current_player, current_player_index=current_player_index,
-                           question_number=current_question_number)
+                           question_number=current_question_number, round_number=current_round)
 
-@app.route("/next_turn")
+@app.route("/next_turn", methods=["POST"])
 def next_turn():
-    global players, current_player_index, current_question_number
+    global players, current_player_index, current_question_number, current_round
     if players:
         current_player_index = (current_player_index + 1) % len(players)
         current_question_number += 1
+
+        total_questions = len(players) * 2
+        if current_question_number > total_questions:
+            if current_round < 10:
+                current_round += 1
+                current_question_number = 1
+            else:
+                return redirect(url_for("home"))  # End game after 10 rounds
+
     return redirect(url_for("gameplay"))
 
 @app.route("/quit")
 def quit_game():
-    global players, current_player_index, current_question_number
+    global players, current_player_index, current_question_number, current_round
     players = []
     current_player_index = 0
     current_question_number = 1
-    return redirect(url_for("index"))
+    current_round = 1
+    return redirect(url_for("home"))
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
