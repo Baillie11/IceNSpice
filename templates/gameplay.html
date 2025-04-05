@@ -15,18 +15,32 @@
       <img src="{{ url_for('static', filename='icenspicelogo.png') }}" alt="Ice n Spice Logo" class="w-24 mb-4">
     </div>
 
-    <!-- Column 2 (Challenge and Info) -->
-    <div class="col-span-12 md:col-span-8 flex flex-col items-center text-center space-y-6">
+    <!-- Column 2 (Main content) -->
+    <div class="col-span-12 md:col-span-8 flex flex-col items-center text-center space-y-4">
       <h1 class="text-4xl font-bold text-red-500">Challenges</h1>
-      
-      <div class="text-xl font-semibold">
+
+      <div class="text-lg font-medium">
         Round {{ round_number }} &nbsp;&nbsp; | &nbsp;&nbsp; Question {{ question_number }}
       </div>
 
+      <!-- Highlight Current Player and Partner -->
+      <div class="bg-white rounded-lg shadow-md p-4 w-full max-w-md text-center space-y-2">
+        <div class="text-xl text-gray-700">
+          <span class="font-semibold text-red-600">Current Player:</span> {{ current_player }}
+        </div>
+        {% if partner_name %}
+        <div class="text-xl text-gray-700">
+          <span class="font-semibold text-blue-600">Partnered With:</span> {{ partner_name }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Challenge Display -->
       <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-2xl">
         <p class="text-xl font-medium">{{ challenge }}</p>
       </div>
 
+      <!-- Completion Form -->
       <form method="POST" action="{{ url_for('next_turn') }}" class="flex flex-col items-center space-y-4">
         <label class="inline-flex items-center">
           <input type="checkbox" id="completedCheckbox" class="form-checkbox h-5 w-5 text-red-500">

@@ -93,25 +93,64 @@ def randomize():
         return redirect(url_for("gameplay"))
     return redirect(url_for("index"))
 
+def get_matching_player(current_player, pairing):
+    potential = []
+    current_name = current_player['name']
+    current_sex = current_player['sex']
+    current_orientation = current_player['orientation']
+    current_partner = current_player.get('partner')
+
+    for p in players:
+        if p['name'] == current_name:
+            continue
+        if current_partner and p['name'] == current_partner:
+            continue
+
+        # Pairing must match
+        match = False
+        if pairing == "Male to Female" and current_sex == "Male" and p['sex'] == "Female":
+            match = True
+        elif pairing == "Female to Male" and current_sex == "Female" and p['sex'] == "Male":
+            match = True
+        elif pairing == "Male to Male" and current_sex == "Male" and p['sex'] == "Male":
+            match = True
+        elif pairing == "Female to Female" and current_sex == "Female" and p['sex'] == "Female":
+            match = True
+        elif pairing == "All":
+            match = True
+
+        if match:
+            if current_orientation == "Straight" and pairing in ["Male to Male", "Female to Female"]:
+                continue
+            potential.append(p['name'])
+
+    return random.choice(potential) if potential else None
+
 @app.route("/gameplay")
 def gameplay():
     global players, current_player_index, current_question_number, current_round
     if not players:
         return redirect(url_for("index"))
 
-    current_player = players[current_player_index]["name"]
+    current_player = players[current_player_index]
+    current_name = current_player['name']
 
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    c.execute("SELECT challenge_text FROM challenges ORDER BY RANDOM() LIMIT 1")
-    challenge = c.fetchone()
+    c.execute("SELECT challenge_text, pairing FROM challenges ORDER BY RANDOM() LIMIT 1")
+    row = c.fetchone()
     conn.close()
 
-    challenge_text = challenge[0] if challenge else "No challenges available."
-    challenge_text = challenge_text.replace("USERNAME", current_player)
+    if row:
+        challenge_text, pairing = row
+        partner_name = get_matching_player(current_player, pairing)
+        challenge_text = challenge_text.replace("USERNAME", current_name)
+        challenge_text = challenge_text.replace("PARTNERNAME", partner_name if partner_name else "someone")
+    else:
+        challenge_text = "No challenges available."
 
     return render_template("gameplay.html", players=players, challenge=challenge_text,
-                           current_player=current_player, current_player_index=current_player_index,
+                           current_player=current_name, current_player_index=current_player_index,
                            question_number=current_question_number, round_number=current_round)
 
 @app.route("/next_turn", methods=["POST"])
@@ -127,7 +166,7 @@ def next_turn():
                 current_round += 1
                 current_question_number = 1
             else:
-                return redirect(url_for("home"))  # Game over after round 10
+                return redirect(url_for("home"))
 
     return redirect(url_for("gameplay"))
 
