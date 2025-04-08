@@ -42,6 +42,7 @@ current_player_index = 0
 current_question_number = 1
 current_round = 1
 
+
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
@@ -60,6 +61,28 @@ def init_db():
     conn.close()
 
 init_db()
+
+@app.route("/update-challenge/<int:id>", methods=["POST"])
+def update_challenge(id):
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    challenge_text = request.form.get("challenge_text")
+    intensity = request.form.get("intensity")
+    orientation = request.form.get("orientation")
+    pairing = request.form.get("pairing")
+
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("""
+        UPDATE challenges
+        SET challenge_text = ?, intensity = ?, orientation = ?, pairing = ?
+        WHERE id = ?
+    """, (challenge_text, intensity, orientation, pairing, id))
+    conn.commit()
+    conn.close()
+    flash("Challenge updated successfully.", "success")
+    return redirect(url_for("admin"))
 
 @app.route("/")
 def home():

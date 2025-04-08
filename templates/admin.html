@@ -1,99 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel - Ice n Spice</title>
+  <meta charset="UTF-8">
+  <title>Admin - Ice n Spice</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen py-10 px-5">
+<body class="bg-gray-100 text-gray-800 min-h-screen p-6">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center text-red-500">Admin Panel - Manage Challenges</h1>
 
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl font-bold text-red-500 mb-6">Admin Panel</h1>
-
-    <form method="POST" class="bg-white p-6 rounded-lg shadow-md space-y-4">
-      <div>
-        <label class="block font-medium text-gray-700">Challenge Text</label>
-        <textarea name="challenge_text" required rows="3"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"></textarea>
-      </div>
-
-      <div>
-        <label class="block font-medium text-gray-700">Intensity (1-10)</label>
-        <select name="intensity" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+    <form method="POST" action="{{ url_for('admin') }}" class="bg-white p-4 rounded-lg shadow-md mb-6">
+      <h2 class="text-xl font-semibold mb-4">Add New Challenge</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input type="text" name="challenge_text" placeholder="Challenge Text" class="p-2 border rounded w-full" required>
+        <select name="intensity" class="p-2 border rounded w-full" required>
           {% for i in range(1, 11) %}
-            <option value="{{ i }}">{{ i }}</option>
+          <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
         </select>
-      </div>
-
-      <div>
-        <label class="block font-medium text-gray-700">Orientation</label>
-        <select name="orientation" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+        <select name="orientation" class="p-2 border rounded w-full" required>
           <option value="Straight">Straight</option>
           <option value="Bi">Bi</option>
         </select>
-      </div>
-
-      <div>
-        <label class="block font-medium text-gray-700">Pairing</label>
-        <select name="pairing" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
-          <option value="All">All</option>
+        <select name="pairing" class="p-2 border rounded w-full" required>
           <option value="Male to Female">Male to Female</option>
           <option value="Female to Male">Female to Male</option>
           <option value="Male to Male">Male to Male</option>
           <option value="Female to Female">Female to Female</option>
+          <option value="All">All</option>
         </select>
       </div>
-
-      <button type="submit"
-        class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold shadow-md hover:bg-blue-600 transition">
-        Add Challenge
-      </button>
+      <button type="submit" class="mt-4 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600">Add Challenge</button>
     </form>
 
-    <hr class="my-8">
+    <h2 class="text-2xl font-semibold mb-4">Existing Challenges</h2>
 
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Existing Challenges</h2>
-    <table class="w-full table-auto border border-gray-300">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="p-2 text-left">ID</th>
-          <th class="p-2 text-left">Text</th>
-          <th class="p-2">Intensity</th>
-          <th class="p-2">Orientation</th>
-          <th class="p-2">Pairing</th>
-          <th class="p-2">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for challenge in challenges %}
-          <tr class="border-t border-gray-300">
-            <td class="p-2">{{ challenge[0] }}</td>
-            <td class="p-2">{{ challenge[4] }}</td>
-            <td class="p-2 text-center">{{ challenge[1] }}</td>
-            <td class="p-2 text-center">{{ challenge[2] }}</td>
-            <td class="p-2 text-center">{{ challenge[3] }}</td>
-            <td class="p-2 text-center">
-              <a href="{{ url_for('delete_challenge', id=challenge[0]) }}"
-                 class="text-red-500 hover:underline">Delete</a>
-            </td>
-          </tr>
+    {% for challenge in challenges %}
+    <form method="POST" action="{{ url_for('update_challenge', id=challenge[0]) }}"
+          class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center bg-white p-4 rounded shadow mb-4">
+      <input type="text" name="challenge_text" value="{{ challenge[4] }}" class="p-2 border rounded w-full" required>
+      <select name="intensity" class="p-2 border rounded w-full">
+        {% for i in range(1, 11) %}
+        <option value="{{ i }}" {% if challenge[1] == i %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
-      </tbody>
-    </table>
+      </select>
+      <select name="orientation" class="p-2 border rounded w-full">
+        <option value="Straight" {% if challenge[2] == 'Straight' %}selected{% endif %}>Straight</option>
+        <option value="Bi" {% if challenge[2] == 'Bi' %}selected{% endif %}>Bi</option>
+      </select>
+      <select name="pairing" class="p-2 border rounded w-full">
+        {% for option in ['Male to Female', 'Female to Male', 'Male to Male', 'Female to Female', 'All'] %}
+        <option value="{{ option }}" {% if challenge[3] == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <div class="flex justify-center space-x-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save</button>
+        <a href="{{ url_for('delete_challenge', id=challenge[0]) }}"
+           class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+           onclick="return confirm('Are you sure you want to delete this challenge?');">Delete</a>
+      </div>
+    </form>
+    {% endfor %}
 
-    <div class="mt-8 text-center">
-      <a href="{{ url_for('home') }}"
-         class="inline-block px-6 py-3 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition">
-        Back to Home
-      </a>
+    <div class="mt-6 text-center">
+      <a href="{{ url_for('admin_logout') }}" class="text-red-500 hover:underline">Logout</a>
     </div>
-
   </div>
-
 </body>
 </html>
