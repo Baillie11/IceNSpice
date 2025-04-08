@@ -17,26 +17,41 @@
     <form method="POST" action="{{ url_for('admin') }}" class="bg-white p-4 rounded-lg shadow-md mb-6">
       <h2 class="text-xl font-semibold mb-4">Add New Challenge</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <textarea name="challenge_text"
-                  placeholder="Challenge Text"
-                  class="p-2 border rounded w-full resize-y min-h-[2.5rem]"
-                  required></textarea>
-        <select name="intensity" class="p-2 border rounded w-full" required>
-          {% for i in range(1, 11) %}
-          <option value="{{ i }}">{{ i }}</option>
-          {% endfor %}
-        </select>
-        <select name="orientation" class="p-2 border rounded w-full" required>
-          <option value="Straight">Straight</option>
-          <option value="Bi">Bi</option>
-        </select>
-        <select name="pairing" class="p-2 border rounded w-full" required>
-          <option value="Male to Female">Male to Female</option>
-          <option value="Female to Male">Female to Male</option>
-          <option value="Male to Male">Male to Male</option>
-          <option value="Female to Female">Female to Female</option>
-          <option value="All">All</option>
-        </select>
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Challenge Text</label>
+          <textarea name="challenge_text"
+                    placeholder="Enter challenge here"
+                    class="p-2 border rounded w-full resize-y min-h-[2.5rem]"
+                    required></textarea>
+        </div>
+
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Intensity (1–10)</label>
+          <select name="intensity" class="p-2 border rounded w-full" required>
+            {% for i in range(1, 11) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Orientation</label>
+          <select name="orientation" class="p-2 border rounded w-full" required>
+            <option value="Straight">Straight</option>
+            <option value="Bi">Bi</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 text-sm font-semibold">Pairing</label>
+          <select name="pairing" class="p-2 border rounded w-full" required>
+            <option value="Male to Female">Male to Female</option>
+            <option value="Female to Male">Female to Male</option>
+            <option value="Male to Male">Male to Male</option>
+            <option value="Female to Female">Female to Female</option>
+            <option value="All">All</option>
+          </select>
+        </div>
       </div>
       <button type="submit" class="mt-4 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600">Add Challenge</button>
     </form>
