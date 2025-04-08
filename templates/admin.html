@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>Admin - Ice n Spice</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    textarea:focus {
+      min-height: 6rem;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen p-6">
   <div class="max-w-6xl mx-auto">
@@ -12,7 +17,10 @@
     <form method="POST" action="{{ url_for('admin') }}" class="bg-white p-4 rounded-lg shadow-md mb-6">
       <h2 class="text-xl font-semibold mb-4">Add New Challenge</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <input type="text" name="challenge_text" placeholder="Challenge Text" class="p-2 border rounded w-full" required>
+        <textarea name="challenge_text"
+                  placeholder="Challenge Text"
+                  class="p-2 border rounded w-full resize-y min-h-[2.5rem]"
+                  required></textarea>
         <select name="intensity" class="p-2 border rounded w-full" required>
           {% for i in range(1, 11) %}
           <option value="{{ i }}">{{ i }}</option>
@@ -35,10 +43,17 @@
 
     <h2 class="text-2xl font-semibold mb-4">Existing Challenges</h2>
 
+    <div class="text-center text-sm text-gray-600 mb-4">
+      Total Challenges: <strong>{{ challenges|length }}</strong>
+    </div>
+
     {% for challenge in challenges %}
     <form method="POST" action="{{ url_for('update_challenge', id=challenge[0]) }}"
-          class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center bg-white p-4 rounded shadow mb-4">
-      <input type="text" name="challenge_text" value="{{ challenge[4] }}" class="p-2 border rounded w-full" required>
+          class="grid grid-cols-1 md:grid-cols-6 gap-4 items-center bg-white p-4 rounded shadow mb-4">
+      <div class="text-gray-500 font-semibold text-center">{{ loop.index }}</div>
+      <textarea name="challenge_text"
+                class="p-2 border rounded w-full resize-y min-h-[2.5rem]"
+                required>{{ challenge[4] }}</textarea>
       <select name="intensity" class="p-2 border rounded w-full">
         {% for i in range(1, 11) %}
         <option value="{{ i }}" {% if challenge[1] == i %}selected{% endif %}>{{ i }}</option>
