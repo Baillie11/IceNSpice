@@ -14,6 +14,7 @@
   <div class="max-w-6xl mx-auto">
     <h1 class="text-3xl font-bold mb-6 text-center text-red-500">Admin Panel - Manage Challenges</h1>
 
+    <!-- Add New Challenge Form -->
     <form method="POST" action="{{ url_for('admin') }}" class="bg-white p-4 rounded-lg shadow-md mb-6">
       <h2 class="text-xl font-semibold mb-4">Add New Challenge</h2>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -39,6 +40,9 @@
           <select name="orientation" class="p-2 border rounded w-full" required>
             <option value="Straight">Straight</option>
             <option value="Bi">Bi</option>
+            <option value="Gay">Gay</option>
+            <option value="Lesbian">Lesbian</option>
+            <option value="All">All</option>
           </select>
         </div>
 
@@ -56,12 +60,13 @@
       <button type="submit" class="mt-4 px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600">Add Challenge</button>
     </form>
 
-    <h2 class="text-2xl font-semibold mb-4">Existing Challenges</h2>
-
+    <!-- Challenge Count -->
+    <h2 class="text-2xl font-semibold mb-2">Existing Challenges</h2>
     <div class="text-center text-sm text-gray-600 mb-4">
       Total Challenges: <strong>{{ challenges|length }}</strong>
     </div>
 
+    <!-- Challenge List -->
     {% for challenge in challenges %}
     <form method="POST" action="{{ url_for('update_challenge', id=challenge[0]) }}"
           class="grid grid-cols-1 md:grid-cols-6 gap-4 items-center bg-white p-4 rounded shadow mb-4">
@@ -75,8 +80,9 @@
         {% endfor %}
       </select>
       <select name="orientation" class="p-2 border rounded w-full">
-        <option value="Straight" {% if challenge[2] == 'Straight' %}selected{% endif %}>Straight</option>
-        <option value="Bi" {% if challenge[2] == 'Bi' %}selected{% endif %}>Bi</option>
+        {% for option in ['Straight', 'Bi', 'Gay', 'Lesbian', 'All'] %}
+        <option value="{{ option }}" {% if challenge[2] == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
       </select>
       <select name="pairing" class="p-2 border rounded w-full">
         {% for option in ['Male to Female', 'Female to Male', 'Male to Male', 'Female to Female', 'All'] %}

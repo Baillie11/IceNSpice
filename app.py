@@ -42,7 +42,6 @@ current_player_index = 0
 current_question_number = 1
 current_round = 1
 
-
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
@@ -50,7 +49,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS challenges (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             intensity INTEGER NOT NULL CHECK(intensity BETWEEN 1 AND 10),
-            orientation TEXT NOT NULL CHECK(orientation IN ('Straight', 'Bi')),
+            orientation TEXT NOT NULL CHECK(orientation IN ('All', 'Straight', 'Bi', 'Gay', 'Lesbian')),
             pairing TEXT NOT NULL CHECK(pairing IN (
                 'Male to Female', 'Female to Male', 'Male to Male', 'Female to Female', 'All'
             )),
@@ -61,28 +60,6 @@ def init_db():
     conn.close()
 
 init_db()
-
-@app.route("/update-challenge/<int:id>", methods=["POST"])
-def update_challenge(id):
-    if not session.get("admin_logged_in"):
-        return redirect(url_for("admin_login"))
-
-    challenge_text = request.form.get("challenge_text")
-    intensity = request.form.get("intensity")
-    orientation = request.form.get("orientation")
-    pairing = request.form.get("pairing")
-
-    conn = sqlite3.connect(DB_FILE)
-    c = conn.cursor()
-    c.execute("""
-        UPDATE challenges
-        SET challenge_text = ?, intensity = ?, orientation = ?, pairing = ?
-        WHERE id = ?
-    """, (challenge_text, intensity, orientation, pairing, id))
-    conn.commit()
-    conn.close()
-    flash("Challenge updated successfully.", "success")
-    return redirect(url_for("admin"))
 
 @app.route("/")
 def home():
@@ -129,8 +106,8 @@ def get_matching_player(current_player, pairing):
         if current_partner and p['name'] == current_partner:
             continue
 
-        # Pairing must match
         match = False
+        # Match pairing first
         if pairing == "Male to Female" and current_sex == "Male" and p['sex'] == "Female":
             match = True
         elif pairing == "Female to Male" and current_sex == "Female" and p['sex'] == "Male":
@@ -143,8 +120,14 @@ def get_matching_player(current_player, pairing):
             match = True
 
         if match:
+            # Match orientation logic
             if current_orientation == "Straight" and pairing in ["Male to Male", "Female to Female"]:
                 continue
+            if current_orientation == "Gay" and (pairing not in ["Male to Male"] or p['sex'] != "Male"):
+                continue
+            if current_orientation == "Lesbian" and (pairing not in ["Female to Female"] or p['sex'] != "Female"):
+                continue
+            # "Bi" and "All" skip this filter
             potential.append(p['name'])
 
     return random.choice(potential) if potential else None
@@ -225,6 +208,28 @@ def admin():
     conn.close()
 
     return render_template("admin.html", challenges=challenges)
+
+@app.route("/update-challenge/<int:id>", methods=["POST"])
+def update_challenge(id):
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    challenge_text = request.form.get("challenge_text")
+    intensity = request.form.get("intensity")
+    orientation = request.form.get("orientation")
+    pairing = request.form.get("pairing")
+
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("""
+        UPDATE challenges
+        SET challenge_text = ?, intensity = ?, orientation = ?, pairing = ?
+        WHERE id = ?
+    """, (challenge_text, intensity, orientation, pairing, id))
+    conn.commit()
+    conn.close()
+    flash("Challenge updated successfully.", "success")
+    return redirect(url_for("admin"))
 
 @app.route("/delete/<int:id>")
 def delete_challenge(id):
