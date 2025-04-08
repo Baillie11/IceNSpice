@@ -107,7 +107,6 @@ def get_matching_player(current_player, pairing):
             continue
 
         match = False
-        # Match pairing first
         if pairing == "Male to Female" and current_sex == "Male" and p['sex'] == "Female":
             match = True
         elif pairing == "Female to Male" and current_sex == "Female" and p['sex'] == "Male":
@@ -120,14 +119,12 @@ def get_matching_player(current_player, pairing):
             match = True
 
         if match:
-            # Match orientation logic
             if current_orientation == "Straight" and pairing in ["Male to Male", "Female to Female"]:
                 continue
             if current_orientation == "Gay" and (pairing not in ["Male to Male"] or p['sex'] != "Male"):
                 continue
             if current_orientation == "Lesbian" and (pairing not in ["Female to Female"] or p['sex'] != "Female"):
                 continue
-            # "Bi" and "All" skip this filter
             potential.append(p['name'])
 
     return random.choice(potential) if potential else None
@@ -174,6 +171,16 @@ def next_turn():
             else:
                 return redirect(url_for("home"))
 
+    return redirect(url_for("gameplay"))
+
+@app.route("/skip_round", methods=["POST"])
+def skip_round():
+    global current_question_number, current_round
+    if current_round < 10:
+        current_round += 1
+        current_question_number = 1
+    else:
+        return redirect(url_for("home"))
     return redirect(url_for("gameplay"))
 
 @app.route("/quit")
