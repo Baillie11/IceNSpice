@@ -18,19 +18,21 @@
     <!-- Player Form -->
     <form method="POST" action="{{ url_for('index') }}" class="bg-white p-6 rounded-lg shadow space-y-4">
       <div>
-        <label class="block text-sm font-semibold mb-1">Name</label>
-        <input type="text" name="name" placeholder="Your Name" required class="w-full p-2 border rounded">
+        <label for="name" class="block text-sm font-semibold mb-1">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required class="w-full p-2 border rounded">
       </div>
+
       <div>
-        <label class="block text-sm font-semibold mb-1">Sex</label>
-        <select name="sex" required class="w-full p-2 border rounded">
+        <label for="sex" class="block text-sm font-semibold mb-1">Sex</label>
+        <select id="sex" name="sex" required class="w-full p-2 border rounded">
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
       </div>
+
       <div>
-        <label class="block text-sm font-semibold mb-1">Orientation</label>
-        <select name="orientation" required class="w-full p-2 border rounded">
+        <label for="orientation" class="block text-sm font-semibold mb-1">Orientation</label>
+        <select id="orientation" name="orientation" required class="w-full p-2 border rounded">
           <option value="Straight">Straight</option>
           <option value="Bi">Bi</option>
           <option value="Gay">Gay</option>
@@ -38,15 +40,17 @@
           <option value="All">All</option>
         </select>
       </div>
+
       <div>
-        <label class="block text-sm font-semibold mb-1">Partner (optional)</label>
-        <select name="partner" class="w-full p-2 border rounded">
+        <label for="partner" class="block text-sm font-semibold mb-1">Partner (optional)</label>
+        <select id="partner" name="partner" class="w-full p-2 border rounded">
           <option value="">-- Select Partner --</option>
           {% for player in players %}
           <option value="{{ player.name }}">{{ player.name }}</option>
           {% endfor %}
         </select>
       </div>
+
       <button type="submit" class="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Add Player</button>
     </form>
 
@@ -57,7 +61,7 @@
       <ul class="bg-white p-4 rounded-lg shadow divide-y divide-gray-200">
         {% for player in players %}
         <li class="py-2">
-          {{ player.name }} ({{ player.sex }}, {{ player.orientation }})
+          <strong>{{ player.name }}</strong> ({{ player.sex }}, {{ player.orientation }})
           {% if player.partner %}
             <span class="text-sm text-gray-500">– Partner: {{ player.partner }}</span>
           {% endif %}
