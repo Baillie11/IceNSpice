@@ -5,6 +5,8 @@ import random
 import smtplib
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
+import csv
+from io import TextIOWrapper
 
 # Load environment variables
 if os.path.exists(".env"):
@@ -215,6 +217,45 @@ def admin():
     conn.close()
 
     return render_template("admin.html", challenges=challenges)
+
+@app.route("/bulk_import", methods=["POST"])
+def bulk_import():
+    if not session.get("admin_logged_in"):
+        return redirect(url_for("admin_login"))
+
+    file = request.files.get("file")
+    if not file:
+        flash("No file selected.", "error")
+        return redirect(url_for("admin"))
+
+    try:
+        stream = TextIOWrapper(file.stream, encoding="utf-8")
+        reader = csv.DictReader(stream)
+
+        conn = sqlite3.connect(DB_FILE)
+        c = conn.cursor()
+
+        count = 0
+        for row in reader:
+            text = row["challenge_text"].strip()
+            intensity = int(row["intensity"])
+            orientation = row["orientation"].strip()
+            pairing = row["pairing"].strip()
+
+            if text:
+                c.execute("INSERT INTO challenges (challenge_text, intensity, orientation, pairing) VALUES (?, ?, ?, ?)",
+                          (text, intensity, orientation, pairing))
+                count += 1
+
+        conn.commit()
+        conn.close()
+
+        flash(f"Successfully imported {count} challenges.", "success")
+    except Exception as e:
+        flash(f"Import failed: {str(e)}", "error")
+
+    return redirect(url_for("admin"))
+
 
 @app.route("/update-challenge/<int:id>", methods=["POST"])
 def update_challenge(id):
