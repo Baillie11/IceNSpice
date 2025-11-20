@@ -57,5 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="index.php" class="mt-6 text-red-500 hover:underline text-lg">Back to Home</a>
     </div>
 
+    <!-- Footer -->
+    <footer class="text-center py-4 text-sm text-gray-600">
+        Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
+    </footer>
+
 </body>
 </html>

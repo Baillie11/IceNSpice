@@ -158,5 +158,10 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <a href="admin_logout.php" class="text-red-500 hover:underline">Logout</a>
     </div>
   </div>
+  
+  <!-- Footer -->
+  <footer class="text-center py-4 text-sm text-gray-600">
+      Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
+  </footer>
 </body>
 </html>
