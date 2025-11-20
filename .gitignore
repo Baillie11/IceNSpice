@@ -1,0 +1,28 @@
+# Environment variables (contains sensitive data)
+.env
+
+# Database files
+challenges.db
+challenges_backup.db
+*.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+error_log
+
+# Temporary files
+tmp/
+temp/
+cache/
