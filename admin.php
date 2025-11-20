@@ -111,10 +111,20 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
       Total Challenges: <strong><?= count($challenges) ?></strong>
     </div>
 
+    <!-- Column Headings -->
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-center bg-yellow-300 p-4 rounded-t shadow mb-0 font-semibold">
+      <div class="text-center">#</div>
+      <div>Challenge Text</div>
+      <div>Intensity</div>
+      <div>Orientation</div>
+      <div>Pairing</div>
+      <div class="text-center">Actions</div>
+    </div>
+
     <!-- Challenge List -->
     <?php foreach ($challenges as $index => $challenge): ?>
     <form method="POST" action="update_challenge.php"
-          class="grid grid-cols-1 md:grid-cols-6 gap-4 items-center bg-white p-4 rounded shadow mb-4">
+          class="grid grid-cols-1 md:grid-cols-6 gap-4 items-center bg-white p-4 <?= $index === 0 ? '' : 'rounded' ?> shadow mb-4">
       <input type="hidden" name="id" value="<?= $challenge['id'] ?>">
       <div class="text-gray-500 font-semibold text-center"><?= $index + 1 ?></div>
       <textarea name="challenge_text"
