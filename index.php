@@ -10,9 +10,9 @@ require_once 'config.php';
     <link rel="icon" type="image/png" href="assets/icenspicelogo.png">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
-    <div class="min-h-screen flex items-center justify-center py-6 px-4">
+    <div class="flex-grow flex items-center justify-center py-6 px-4">
         <div class="max-w-5xl w-full">
             
             <!-- Main Content Grid -->
@@ -91,7 +91,7 @@ require_once 'config.php';
     </div>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-sm text-gray-600">
+    <footer class="text-center py-3 text-sm text-gray-600 mt-auto">
         Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
     </footer>
 

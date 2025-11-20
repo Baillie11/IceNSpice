@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/png" href="assets/icenspicelogo.png">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800">
+<body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
+
+    <div class="flex-grow flex flex-col items-center justify-center">
 
     <h1 class="text-3xl font-bold text-red-500">Admin Login</h1>
 
@@ -41,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <a href="index.php" class="mt-4 text-blue-500 hover:underline">Back to Home</a>
+    </div>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-sm text-gray-600 mt-8">
+    <footer class="text-center py-3 text-sm text-gray-600 mt-auto">
         Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
     </footer>
 

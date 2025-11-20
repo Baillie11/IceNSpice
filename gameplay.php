@@ -83,7 +83,7 @@ if ($row) {
   <link rel="icon" type="image/png" href="assets/icenspicelogo.png">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-pink-100 min-h-screen">
+<body class="bg-pink-100 flex flex-col min-h-screen">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto">
 
     <!-- Logo (Top on mobile, left on desktop) -->
@@ -131,7 +131,7 @@ if ($row) {
   </div>
   
   <!-- Footer -->
-  <footer class="text-center py-4 text-sm text-gray-600">
+  <footer class="text-center py-3 text-sm text-gray-600 mt-auto">
       Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
   </footer>
 </body>

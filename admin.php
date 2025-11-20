@@ -40,7 +40,8 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen p-4 md:p-6">
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+  <div class="flex-grow p-4 md:p-6">
   <div class="max-w-6xl mx-auto">
     <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center text-red-500">Admin Panel - Manage Challenges</h1>
 
@@ -159,9 +160,10 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <a href="admin_logout.php" class="text-red-500 hover:underline">Logout</a>
     </div>
   </div>
+  </div>
   
   <!-- Footer -->
-  <footer class="text-center py-4 text-sm text-gray-600">
+  <footer class="text-center py-3 text-sm text-gray-600 mt-auto">
       Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
   </footer>
 </body>

@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/png" href="assets/icenspicelogo.png">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 flex flex-col min-h-screen">
 
-    <div class="flex flex-col items-center min-h-screen py-10 px-5">
+    <div class="flex-grow flex flex-col items-center justify-center py-10 px-5">
         <h1 class="text-4xl font-bold text-red-500">Suggest a Challenge</h1>
         <p class="text-lg text-center text-gray-600 mt-4 max-w-xl">
             Have a great challenge idea? Submit it below, and it might be added to Ice n Spice!
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-sm text-gray-600">
+    <footer class="text-center py-3 text-sm text-gray-600 mt-auto">
         Powered by <a href="https://www.clickecommerce.com.au" target="_blank" class="text-red-500 hover:underline">Click eCommerce</a>
     </footer>
 
