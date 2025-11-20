@@ -1,9 +1,9 @@
 # Enable rewriting
 RewriteEngine On
 
-# Redirect to HTTPS (uncomment in production)
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Redirect to HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Protect sensitive files
 <FilesMatch "^(config\.php|\.htaccess|\.env|\.env\.example|env_loader\.php)$">
